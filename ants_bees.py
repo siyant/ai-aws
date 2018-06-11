@@ -14,16 +14,24 @@ import copy
 import getopt, sys
 
 data = 'hymenoptera_data'
-transforms = transforms.Compose([
-  transforms.Resize(224),
-  transforms.CenterCrop(224),
-  transforms.ToTensor(),
-  transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-])
+data_transforms = {
+    'train': transforms.Compose([
+        transforms.RandomResizedCrop(224),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+    'val': transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+}
 
 img_datasets = { 
-  'train': datasets.ImageFolder(os.path.join(data, 'train'), transforms),
-  'val': datasets.ImageFolder(os.path.join(data, 'val'), transforms)
+  'train': datasets.ImageFolder(os.path.join(data, 'train'), data_transforms['train']),
+  'val': datasets.ImageFolder(os.path.join(data, 'val'), data_transforms['val'])
 }
 
 dataset_sizes = {x: len(img_datasets[x]) for x in ['train', 'val']}
