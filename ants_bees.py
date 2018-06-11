@@ -44,11 +44,12 @@ def train(model, criterion, optimizer, scheduler, num_epochs = 20):
 
   for epoch in range(num_epochs):
 
-    running_loss = 0.0
-    running_corrects = 0.0
     print ('Epoch {}/{}'.format(epoch+1, num_epochs))
 
     for phase in ['train', 'val']:
+      running_loss = 0.0
+      running_corrects = 0.0
+
       if phase == 'train':
         scheduler.step()
         model.train()
