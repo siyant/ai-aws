@@ -131,7 +131,7 @@ def main():
   # Decay LR by a factor of 0.1 every 7 epochs
   scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
 
-  model = train(model, criterion, optimizer, scheduler, num_epochs)
+  model = train(model, criterion, optimizer, scheduler)
 
 
 if __name__ == '__main__':
