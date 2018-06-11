@@ -68,6 +68,10 @@ def train(model, criterion, optimizer, scheduler, num_epochs = 20):
           _, preds = torch.max(outputs, 1)
           loss = criterion(outputs, labels)
 
+          if phase == 'train':
+            loss.backward()
+            optimizer.step()
+
         running_loss += loss
         running_corrects += torch.sum(preds == labels.data)
 
@@ -126,7 +130,7 @@ def main():
   # Decay LR by a factor of 0.1 every 7 epochs
   scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
 
-  model = train(model, criterion, optimizer, scheduler, num_epochs=1)
+  model = train(model, criterion, optimizer, scheduler, num_epochs)
 
 
 if __name__ == '__main__':
