@@ -73,7 +73,7 @@ def train(model, criterion, optimizer, scheduler, num_epochs = 20):
             loss.backward()
             optimizer.step()
 
-        running_loss += loss
+        running_loss += loss.item() * inputs.size(0)
         running_corrects += torch.sum(preds == labels.data)
 
       epoch_loss = running_loss / dataset_sizes[phase]
