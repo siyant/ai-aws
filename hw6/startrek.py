@@ -154,13 +154,13 @@ def sample(model, startchar='A'):
             in_line = lineToTensor(letter)
     return out_line
 
-def sampleMultiple(model, n=10, temperature=0.5):
+def sampleMultiple(model, n=15, temperature=0.5):
     model.eval()
     model.setTemperature(0.5)
     startChars = "ABCDEFGHIJKLMNOPRSTUVWZ"
     n_chars = len(startChars)
     lines = []
-    for i in range(15):
+    for i in range(n):
         start = startChars[np.random.randint(n_chars)]
         line = sample(model, start)
         lines.append(line)
@@ -172,7 +172,7 @@ all_letters = string.ascii_letters + string.digits + string.punctuation + " "
 n_letters = len(all_letters) + 1  # +1 for end of sentence marker
 
 all_lines = getData()
-# all_lines = all_lines[0:100] ### for testing
+# all_lines = all_lines[0:10] ### for testing
 n_lines = len(all_lines)
 np.random.shuffle(all_lines)
 train_lines = all_lines[0:int(0.8*n_lines)]
@@ -186,6 +186,7 @@ scheduler = optim.lr_scheduler.StepLR(optimizer, 10, 0.2)
 start = time.time()
 train_losses = []
 test_losses = []
+best_loss = 100
 
 with open('startrek_generated.txt', 'w') as f:
     for epoch in range(10):
@@ -193,6 +194,9 @@ with open('startrek_generated.txt', 'w') as f:
 
         train_loss, train_acc = train(model, train_lines, criterion, optimizer)
         test_loss, test_acc = test(model, test_lines, criterion)
+
+        if (test_loss < best_loss):
+            torch.save(model.state_dict(), 'model.pt')
 
         train_losses.append(train_loss)
         test_losses.append(test_loss)
@@ -203,4 +207,4 @@ with open('startrek_generated.txt', 'w') as f:
 plt.figure()
 plt.plot(train_losses)
 plt.plot(test_losses)
-plt.show()
+plt.savefig('losses.png')
